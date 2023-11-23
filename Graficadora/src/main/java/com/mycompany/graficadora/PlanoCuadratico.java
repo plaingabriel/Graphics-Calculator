@@ -12,8 +12,7 @@ public class PlanoCuadratico extends javax.swing.JFrame {
     private JPanel p;
     private int w;
     private int h;
-    private int cont = 0; 
-    private int e; // Escala
+    private int cont = 0;
     private Funcion f = new Funcion();
     
     public PlanoCuadratico() {
@@ -37,19 +36,27 @@ public class PlanoCuadratico extends javax.swing.JFrame {
         if (cont > 1) {
             g.clearRect(0, 0, w, h);
         }
-            
-        int incremento = 200/divisiones;
         
-        for (int x1 = w / 2, x2 = w / 2 ; x1 < w; x1 += e, x2 -= e) {
-            // Dibujar las lineas verticales del plano cartesiano
-            g.drawLine(x1, 0, x1, h); // Desde el 0 hasta la derecha
-            g.drawLine(x2, 0, x2, h); // Desde el 0 hasta la izquierda
+        //JOptionPane.showMessageDialog(rootPane, divisiones);
+        int incremento = 200/divisiones;
+        int medio = 200;
+        
+        for (int i = 1; i < 10; i++) {
+            // Dibujar las lineas verticales del plano cartesiano desde el medio hasta la derecha
+            g.drawLine(medio+i*incremento, 0, medio+i*incremento, h);
+            g.drawLine(medio+(-i)*incremento, 0, medio+(-i)*incremento, h);
+            // Dibujar los numeros segun las decimas
+            g.drawString(Integer.toString(i*decimas), medio+i*incremento+4*contDecimas, medio+10);
+            g.drawString(Integer.toString((-i)*decimas), medio+(-i)*incremento+4*contDecimas, medio+10);
         }
         
-        for (int y1 = h/2, y2 = h/2; y1 < h; y1 += e, y2 -= e) {
+        for (int i = 1; i < 10; i++) {
             // Dibujar las lineas horizontales del plano cartesiano
-            g.drawLine(0, y1, w, y1); // Desde el 0 hasta arriba
-            g.drawLine(0, y2, w, y2); // Desde el 0 hasta abajo
+            g.drawLine(0, medio+i*incremento, w,  medio+i*incremento);
+            g.drawLine(0, medio+(-i)*incremento, w, medio+(-i)*incremento);
+            // Dibujar los numeros segun las decimas
+            g.drawString(Integer.toString(i*decimas), medio+i*incremento+4*contDecimas, medio+10);
+            g.drawString(Integer.toString((-i)*decimas), medio+(-i)*incremento+4*contDecimas, medio+10);
         }
         
         // Hacer lineas en forma de puntos
@@ -66,7 +73,7 @@ public class PlanoCuadratico extends javax.swing.JFrame {
         
     }
     
-    public void dibujarPunto (float x, float y) {
+    /*public void dibujarPunto (float x, float y) {
         Graphics2D g = (Graphics2D) p.getGraphics();
         // Coordenadas desde donde se dibujara el punto
         // Se le multiplica la escala para que el punto quede en la posicion correcta
@@ -76,7 +83,7 @@ public class PlanoCuadratico extends javax.swing.JFrame {
         // Dibujar el punto
         // Se le resta el radio del ancho/alto para que el punto quede centrado
         g.fillOval(pX - 3, pY - 3, 6, 6);
-    }
+    }*/
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -226,7 +233,6 @@ public class PlanoCuadratico extends javax.swing.JFrame {
         
         cont = cont + 1;
         PlanoCuadratico pC = new PlanoCuadratico(this.plano);
-        pC.Dibujar(cont);
         
         String s1, s2, s3;
         int a, b, c;
@@ -259,7 +265,8 @@ public class PlanoCuadratico extends javax.swing.JFrame {
         }
         
         f.setCuadratica(a, b, c);
-        f.DibujarCuadratica(pC);
+        pC.Dibujar(cont);
+        //f.DibujarCuadratica(pC);
     }//GEN-LAST:event_graficarBtnMouseClicked
 
     private void backBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_backBtnMouseClicked

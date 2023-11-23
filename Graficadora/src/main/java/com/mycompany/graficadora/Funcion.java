@@ -58,7 +58,7 @@ public class Funcion {
     public double getExtremoLineal() {
         PuntosDeCorteLineal();
         CalcularExtremoLineal();
-        return extremo;
+        return extremo + 1.15;
     }
     
     public double getExtremoCuadratica() {
@@ -66,7 +66,7 @@ public class Funcion {
         if (a != 0) {
             Vertice();
             CalcularExtremoCuadratica();
-            return extremo;
+            return extremo + 1.15;
         }
         // Si es 0, se calcula el extremo como si de una ecuacion lineal se tratase
         CalcularExtremoLineal();
@@ -124,7 +124,7 @@ public class Funcion {
     public void DibujarCuadratica(PlanoCuadratico p) {
         for (float x = -56; x <= 56 ; x += .1) {
             float y = a*(x*x) + b*x + c; // Formula cuadratica
-            p.dibujarPunto(x, y);
+            //p.dibujarPunto(x, y);
         }
     }    
 }
