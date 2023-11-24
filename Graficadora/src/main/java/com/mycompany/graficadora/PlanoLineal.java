@@ -17,8 +17,7 @@ public class PlanoLineal extends javax.swing.JFrame {
     private int w;
     private int h;
     private int cont = 0;
-    private int e; // Escala
-    private Funcion f = new Funcion();
+    private int e = 10; // Escala
     
     public PlanoLineal() {
         initComponents();
@@ -30,7 +29,9 @@ public class PlanoLineal extends javax.swing.JFrame {
         this.h = p.getHeight();
     }
     
-    public void Dibujar(int cont) {
+    public void Dibujar(int cont, Funcion f) {
+        int extremo = (int) f.getExtremoLineal();
+        int dec = 10;
         Graphics2D g = (Graphics2D) p.getGraphics();
         
         // Limpiar si ya hay un plano previo
@@ -38,15 +39,19 @@ public class PlanoLineal extends javax.swing.JFrame {
             g.clearRect(0, 0, w, h);
         }
         
+        while(dec <= extremo)
+            dec += 10;
         
+        Color color = p.getBackground();
+        g.setColor(color);
         
-        for (int x1 = w / 2, x2 = w / 2 ; x1 < w; x1 += e, x2 -= e) {
+        for (int x1 = w / 2, x2 = w / 2; x1 < w; x1 += e, x2 -= e) {
             // Dibujar las lineas verticales del plano cartesiano
             g.drawLine(x1, 0, x1, h); // Desde el 0 hasta la derecha
             g.drawLine(x2, 0, x2, h); // Desde el 0 hasta la izquierda
         }
         
-        for (int y1 = h/2, y2 = h/2; y1 < h; y1 += e, y2 -= e) {
+        for (int y1 = h/2, y2 = h/2, i = 0; y1 < h; y1 += e, y2 -= e, i++) {
             // Dibujar las lineas horizontales del plano cartesiano
             g.drawLine(0, y1, w, y1); // Desde el 0 hasta arriba
             g.drawLine(0, y2, w, y2); // Desde el 0 hasta abajo
@@ -57,9 +62,28 @@ public class PlanoLineal extends javax.swing.JFrame {
         Stroke stroke = new BasicStroke(2f, BasicStroke.CAP_BUTT,
         BasicStroke.JOIN_MITER, 1.0f, dashingPattern, 2.0f);
         
+        int medida1 = 300;
+        int medida2 = 100;
+        
+        g.setColor(Color.red);
+        
+        // Dibujar lineas rojas en el eje x
+        g.drawLine(medida1, 0, medida1, h);
+        g.drawLine(medida2, 0, medida2, h);
+        // Dibujar lineas rojas en el eje y
+        g.drawLine(0, medida1, w, medida1);
+        g.drawLine(0, medida2, w, medida2);
+        
+        g.setColor(Color.black); // Cambiar color a negro
+        // Dibujar decimas en el eje X
+        g.drawString(Integer.toString(dec), medida1, h/2 + 10);
+        g.drawString(Integer.toString(dec), medida2, h/2 + 10);
+        //Dibujar decimas en el eje y
+        g.drawString(Integer.toString(dec), w/2, medida1);
+        g.drawString(Integer.toString(dec), w/2, medida2);
+        
         // Diferenciar lineas del medio
         g.setStroke(stroke);
-        g.setColor(Color.blue);
         
         g.drawLine(w/2, 0, w/2, h);
         g.drawLine(0, h/2, w, h/2);
@@ -200,7 +224,6 @@ public class PlanoLineal extends javax.swing.JFrame {
         cont = cont + 1;
         
         PlanoLineal pL = new PlanoLineal(plano);
-        pL.Dibujar(cont);
         
         String s1, s2;
         int a, b;
@@ -224,7 +247,8 @@ public class PlanoLineal extends javax.swing.JFrame {
             b = Integer.parseInt(s2);
         }
         
-        f.setLineal(a, b);
+        Funcion f = new Funcion(a, b);
+        pL.Dibujar(cont, f);
         f.DibujarLineal(pL);
     }//GEN-LAST:event_graficarBtnMouseClicked
 

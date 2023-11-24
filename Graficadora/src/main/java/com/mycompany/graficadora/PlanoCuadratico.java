@@ -13,8 +13,8 @@ public class PlanoCuadratico extends javax.swing.JFrame {
     private int w;
     private int h;
     private int cont = 0; 
-    private int e; // Escala
-    private Funcion f = new Funcion();
+    private int e = 10; // Escala
+    private Funcion f;
     
     public PlanoCuadratico() {
         initComponents();
@@ -26,27 +26,30 @@ public class PlanoCuadratico extends javax.swing.JFrame {
         this.h = p.getHeight();
     }
     
-    public void Dibujar(int cont) {
-        int decimas = 1, contDecimas = 1, divisiones;
-        
-        for(divisiones = (int) f.getExtremoLineal(); divisiones > 10; divisiones /= 10, decimas *= 10, contDecimas++);
-        
+    public void Dibujar(int cont, Funcion f) {
+        int extremo = (int) f.getExtremoCuadratica();
+        int dec = 10;
         Graphics2D g = (Graphics2D) p.getGraphics();
         
         // Limpiar si ya hay un plano previo
         if (cont > 1) {
             g.clearRect(0, 0, w, h);
         }
-            
-        int incremento = 200/divisiones;
         
-        for (int x1 = w / 2, x2 = w / 2 ; x1 < w; x1 += e, x2 -= e) {
+        while(dec <= extremo)
+            dec += 10;
+            
+        e = 20; // Auxiliar
+        Color color = p.getBackground();
+        g.setColor(color);
+        
+        for (int x1 = w / 2, x2 = w / 2; x1 < w; x1 += e, x2 -= e) {
             // Dibujar las lineas verticales del plano cartesiano
             g.drawLine(x1, 0, x1, h); // Desde el 0 hasta la derecha
             g.drawLine(x2, 0, x2, h); // Desde el 0 hasta la izquierda
         }
         
-        for (int y1 = h/2, y2 = h/2; y1 < h; y1 += e, y2 -= e) {
+        for (int y1 = h/2, y2 = h/2, i = 0; y1 < h; y1 += e, y2 -= e, i++) {
             // Dibujar las lineas horizontales del plano cartesiano
             g.drawLine(0, y1, w, y1); // Desde el 0 hasta arriba
             g.drawLine(0, y2, w, y2); // Desde el 0 hasta abajo
@@ -57,9 +60,28 @@ public class PlanoCuadratico extends javax.swing.JFrame {
         Stroke stroke = new BasicStroke(2f, BasicStroke.CAP_BUTT,
         BasicStroke.JOIN_MITER, 1.0f, dashingPattern, 2.0f);
         
+        int medida1 = 300;
+        int medida2 = 100;
+        
+        g.setColor(Color.red);
+        
+        // Dibujar lineas rojas en el eje x
+        g.drawLine(medida1, 0, medida1, h);
+        g.drawLine(medida2, 0, medida2, h);
+        // Dibujar lineas rojas en el eje y
+        g.drawLine(0, medida1, w, medida1);
+        g.drawLine(0, medida2, w, medida2);
+        
+        g.setColor(Color.black); // Cambiar color a negro
+        // Dibujar decimas en el eje X
+        g.drawString(Integer.toString(dec), medida1, h/2 + 10);
+        g.drawString(Integer.toString(dec), medida2, h/2 + 10);
+        //Dibujar decimas en el eje y
+        g.drawString(Integer.toString(dec), w/2, medida1);
+        g.drawString(Integer.toString(dec), w/2, medida2);
+        
         // Diferenciar lineas del medio
         g.setStroke(stroke);
-        g.setColor(Color.blue);
         
         g.drawLine(w/2, 0, w/2, h);
         g.drawLine(0, h/2, w, h/2);
@@ -226,7 +248,6 @@ public class PlanoCuadratico extends javax.swing.JFrame {
         
         cont = cont + 1;
         PlanoCuadratico pC = new PlanoCuadratico(this.plano);
-        pC.Dibujar(cont);
         
         String s1, s2, s3;
         int a, b, c;
@@ -257,8 +278,8 @@ public class PlanoCuadratico extends javax.swing.JFrame {
         else {
             c = Integer.parseInt(s3);
         }
-        
-        f.setCuadratica(a, b, c);
+        f = new Funcion(a, b, c);
+        pC.Dibujar(cont, f);
         f.DibujarCuadratica(pC);
     }//GEN-LAST:event_graficarBtnMouseClicked
 
