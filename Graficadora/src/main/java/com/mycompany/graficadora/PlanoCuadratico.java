@@ -1,9 +1,18 @@
 package com.mycompany.graficadora;
 
+import java.awt.AWTException;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Robot;
 import java.awt.Stroke;
+import java.awt.image.BufferedImage;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -12,9 +21,11 @@ public class PlanoCuadratico extends javax.swing.JFrame {
     private JPanel p;
     private int w;
     private int h;
-    private int cont = 0; 
-    private int e = 10; // Escala
+    private int cont = 0;
     private Funcion f;
+    private int e = 20;
+    private Point p1 = new Point(0, 0);
+    private Point p2 = new Point(0, 0);
     
     public PlanoCuadratico() {
         initComponents();
@@ -27,32 +38,19 @@ public class PlanoCuadratico extends javax.swing.JFrame {
     }
     
     public void Dibujar(int cont, Funcion f) {
-        int extremo = (int) f.getExtremoCuadratica();
-        int dec = 10;
+        int ext = (int) f.getExtremoCuadratica();
+        int dec = 10, aux = ext;
         Graphics2D g = (Graphics2D) p.getGraphics();
-        
+
         // Limpiar si ya hay un plano previo
         if (cont > 1) {
             g.clearRect(0, 0, w, h);
         }
         
-        while(dec <= extremo)
-            dec += 10;
-            
-        e = 20; // Auxiliar
-        Color color = p.getBackground();
-        g.setColor(color);
-        
-        for (int x1 = w / 2, x2 = w / 2; x1 < w; x1 += e, x2 -= e) {
-            // Dibujar las lineas verticales del plano cartesiano
-            g.drawLine(x1, 0, x1, h); // Desde el 0 hasta la derecha
-            g.drawLine(x2, 0, x2, h); // Desde el 0 hasta la izquierda
-        }
-        
-        for (int y1 = h/2, y2 = h/2, i = 0; y1 < h; y1 += e, y2 -= e, i++) {
-            // Dibujar las lineas horizontales del plano cartesiano
-            g.drawLine(0, y1, w, y1); // Desde el 0 hasta arriba
-            g.drawLine(0, y2, w, y2); // Desde el 0 hasta abajo
+        while (aux > 10) {
+            dec *= 10;
+            aux /= 10;
+            ext = aux % 10;
         }
         
         // Hacer lineas en forma de puntos
@@ -71,6 +69,7 @@ public class PlanoCuadratico extends javax.swing.JFrame {
         // Dibujar lineas rojas en el eje y
         g.drawLine(0, medida1, w, medida1);
         g.drawLine(0, medida2, w, medida2);
+
         
         g.setColor(Color.black); // Cambiar color a negro
         // Dibujar decimas en el eje X
@@ -79,19 +78,22 @@ public class PlanoCuadratico extends javax.swing.JFrame {
         //Dibujar decimas en el eje y
         g.drawString(Integer.toString(dec), w/2, medida1);
         g.drawString(Integer.toString(dec), w/2, medida2);
-        
+
         // Diferenciar lineas del medio
         g.setStroke(stroke);
         
         g.drawLine(w/2, 0, w/2, h);
-        g.drawLine(0, h/2, w, h/2);
-        
+        g.drawLine(0, h / 2, w, h / 2);
+
+        f.DibujarCuadratica(this, ext, dec);
     }
     
     public void dibujarPunto (float x, float y) {
         Graphics2D g = (Graphics2D) p.getGraphics();
         // Coordenadas desde donde se dibujara el punto
         // Se le multiplica la escala para que el punto quede en la posicion correcta
+        g.setColor(Color.BLUE);
+
         int pX = (int) (w/2 + x*e);
         int pY = (int) (h/2 - y*e);
         
@@ -124,6 +126,14 @@ public class PlanoCuadratico extends javax.swing.JFrame {
 
         plano.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         plano.setPreferredSize(new java.awt.Dimension(400, 400));
+        plano.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                planoMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                planoMouseReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout planoLayout = new javax.swing.GroupLayout(plano);
         plano.setLayout(planoLayout);
@@ -245,7 +255,7 @@ public class PlanoCuadratico extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void graficarBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_graficarBtnMouseClicked
-        
+
         cont = cont + 1;
         PlanoCuadratico pC = new PlanoCuadratico(this.plano);
         
@@ -280,7 +290,7 @@ public class PlanoCuadratico extends javax.swing.JFrame {
         }
         f = new Funcion(a, b, c);
         pC.Dibujar(cont, f);
-        f.DibujarCuadratica(pC);
+        
     }//GEN-LAST:event_graficarBtnMouseClicked
 
     private void backBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_backBtnMouseClicked
@@ -321,6 +331,82 @@ public class PlanoCuadratico extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(rootPane, "Solo ingrese números");
         }
     }//GEN-LAST:event_cTxtKeyTyped
+
+    private void planoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_planoMousePressed
+        p1.setLocation(0, 0);
+        p2.setLocation(0, 0);
+        p1.setLocation(evt.getX(), evt.getY());
+    }//GEN-LAST:event_planoMousePressed
+
+    private void planoMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_planoMouseReleased
+        try {
+            p2.setLocation(evt.getX(), evt.getY());
+
+            if (p1.equals(p2)) {
+                return;
+            }
+
+            int width = p2.x - p1.x;
+            int height = p2.y - p1.y;
+            int x;
+            int y;
+
+            if (width < 0 || height < 0)
+            {
+                width *= -1;
+                x = p2.x + 62;
+                height *= -1;
+                y = p2.y + 38;
+            }
+            else
+            {
+                x = p1.x + 62;
+                y = p1.y + 38;
+            }
+
+            Rectangle r = new Rectangle(x, y, width, height);
+            BufferedImage capture = new Robot().createScreenCapture(r);
+
+            int cont = 0;
+
+            for (int i = 0; i < width; i++) {
+                for (int j = 0; j < height; j++) {
+
+                    int pixel = capture.getRGB(i, j);
+                    int red = (pixel >> 16) & 0x000000FF;
+                    int green = (pixel >> 8) & 0x000000FF;
+                    int blue = (pixel) & 0x000000FF;
+
+                    if (red == 0 && green == 0 && blue > 0) { // for the blue pixels
+                        // Blue pixel has RGB value is greater than zero in Blue
+                        cont++;
+                        break;
+                    }
+                }
+
+                if (cont > 0) {
+                    break;
+                }
+            }
+
+            if (cont == 0) {
+                JOptionPane.showMessageDialog(rootPane, "El espacio seleccionado no contiene la gráfica de la función");
+                return;
+            }
+
+
+            Image img = capture.getScaledInstance(400, 400, Image.SCALE_DEFAULT);
+            ImageIcon icon = new ImageIcon(img);
+
+            MostrarZoom zoom = new MostrarZoom(this, true);
+            zoom.setIcon(icon);
+
+            zoom.setVisible(true);
+
+        } catch (AWTException ex) {
+            Logger.getLogger(PlanoLineal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_planoMouseReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel aLabel;

@@ -102,6 +102,10 @@
           <Dimension value="[400, 400]"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="planoMousePressed"/>
+        <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="planoMouseReleased"/>
+      </Events>
 
       <Layout>
         <DimensionLayout dim="0">
@@ -172,7 +176,6 @@
         <Property name="horizontalAlignment" type="int" value="0"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bTxtActionPerformed"/>
         <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="bTxtKeyTyped"/>
       </Events>
     </Component>

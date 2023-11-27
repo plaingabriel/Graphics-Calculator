@@ -1,4 +1,3 @@
-
 package com.mycompany.graficadora;
 
 /**
@@ -36,7 +35,7 @@ public class Graficadora extends javax.swing.JFrame {
         jLabel1.setText("Elija una de las siguientes opciones:");
 
         jButton1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButton1.setText("Función Linear");
+        jButton1.setText("Función Lineal");
         jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jButton1MouseClicked(evt);

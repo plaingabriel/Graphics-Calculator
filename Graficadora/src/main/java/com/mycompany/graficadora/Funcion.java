@@ -54,7 +54,7 @@ public class Funcion {
         if (a != 0) {
             
             // No existe corte con el eje x
-            if ((-4 * a * c) < 0){
+            if ((b * b - 4 * a * c) < 0) {
                 corteX = Double.NaN;
                 return ;
             }
@@ -137,17 +137,30 @@ public class Funcion {
         }
     }
 
-    public void DibujarLineal(PlanoLineal p) {
-        float x = (float) extremo * 10;
-        for (x = -x; x <= (float) extremo * 10; x += .1) {
+    public void DibujarLineal(PlanoLineal p, double e, int dec) {
+        float x = (float) e * 10;
+
+        dec /= 10;
+
+        a /= dec;
+        b /= dec;
+
+        for (x = -x; x <= (float) e * 10; x += .1) {
             float y = a*x + b; // Formula lineal
             p.dibujarPunto(x, y);
         }
     }
     
-    public void DibujarCuadratica(PlanoCuadratico p) {
-        float x = (float) extremo * 2;
-        for (x = -x; x <= (float) extremo * 2; x += .1) {
+    public void DibujarCuadratica(PlanoCuadratico p, double e, int dec) {
+        float x = (float) e * 10;
+
+        dec /= 10;
+
+        a /= dec;
+        b /= dec;
+        c /= dec;
+
+        for (x = -x; x <= (float) e * 10; x += .1) {
             float y = a*(x*x) + b*x + c; // Formula cuadratica
             p.dibujarPunto(x, y);
         }
